@@ -2,7 +2,7 @@
   color-scheme: light;
   font-family: "Noto Sans JP", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   color: #392b29;
-  background: #f3efec;
+  background: transparent;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --ink: #392b29;
@@ -13,6 +13,8 @@
   --teal-soft: #f7e9e5;
   --coral: #b24437;
   --coral-soft: #f8e9e6;
+  --saturday-blue: #2563a8;
+  --saturday-soft: #eaf2fb;
   --glass-line: rgb(224 208 203 / 84%);
 }
 
@@ -24,10 +26,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(ellipse at 84% 3%, rgb(239 209 203 / 58%), transparent 32rem),
-    radial-gradient(ellipse at 8% 60%, rgb(241 228 213 / 38%), transparent 29rem),
-    #f3efec;
+  background: transparent;
 }
 
 button,
@@ -96,6 +95,7 @@ h1 {
   grid-area: calendar;
   min-width: 0;
   padding: 26px 28px 20px;
+  background: rgb(255 255 255 / 86%);
 }
 
 .calendar-toolbar {
@@ -185,7 +185,7 @@ input:disabled {
 }
 
 .weekday-row span:last-child {
-  color: #9b5149;
+  color: var(--saturday-blue);
 }
 
 .calendar-grid {
@@ -231,10 +231,6 @@ input:disabled {
   color: var(--coral);
 }
 
-.day-cell--saturday .day-number {
-  color: #9b5149;
-}
-
 .day-cell--holiday .day-number {
   color: var(--coral);
 }
@@ -272,6 +268,11 @@ input:disabled {
 
 .day-cell--selected.day-cell--holiday .day-number {
   color: var(--coral);
+}
+
+.day-cell--saturday .day-number,
+.day-cell--selected.day-cell--saturday .day-number {
+  color: var(--saturday-blue);
 }
 
 .calendar-footer {
@@ -339,6 +340,7 @@ input:disabled {
 
 .lookup-panel {
   padding: 25px 24px 22px;
+  background: transparent;
 }
 
 .lookup-panel h2 {
@@ -367,7 +369,7 @@ input:disabled {
   padding: 0 11px;
   border: 1px solid #ddcec9;
   border-radius: 12px;
-  background: #fffdfa;
+  background: transparent;
   color: var(--ink);
   font-size: 14px;
 }
@@ -385,7 +387,7 @@ input:disabled {
   padding: 16px;
   border: 1px solid #e8ddd9;
   border-radius: 12px;
-  background: #fffaf8;
+  background: transparent;
 }
 
 .result-placeholder {
@@ -429,6 +431,16 @@ input:disabled {
   color: var(--coral);
 }
 
+.result-state--sunday {
+  background: var(--coral-soft);
+  color: var(--coral);
+}
+
+.result-state--saturday {
+  background: var(--saturday-soft);
+  color: var(--saturday-blue);
+}
+
 .result-state--regular {
   background: #efedeb;
   color: #70625e;
@@ -458,6 +470,7 @@ input:disabled {
   grid-template-columns: 38px minmax(0, 1fr);
   gap: 13px;
   padding: 21px 22px;
+  background: transparent;
 }
 
 .source-icon {
@@ -661,6 +674,17 @@ input:disabled {
     background: rgb(255 250 248 / 76%);
     -webkit-backdrop-filter: blur(16px) saturate(118%);
     backdrop-filter: blur(16px) saturate(118%);
+  }
+
+  .calendar-panel {
+    background: rgb(255 255 255 / 82%);
+  }
+
+  .lookup-panel,
+  .source-panel {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 

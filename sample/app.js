@@ -82,13 +82,19 @@ function renderResult(key) {
   }
 
   const holiday = holidayForDate(key);
+  const weekday = dateFromKey(key).getUTCDay();
   const dateLine = document.createElement("p");
   dateLine.className = "result-date";
   dateLine.textContent = formatDate(key);
 
   const state = document.createElement("span");
-  state.className = `result-state${holiday ? " result-state--holiday" : " result-state--regular"}`;
-  state.textContent = holiday ? "祝日・休日です" : "祝日・休日ではありません";
+  const weekdayState = weekday === 0
+    ? { className: "result-state--sunday", message: "日曜日です" }
+    : weekday === 6
+      ? { className: "result-state--saturday", message: "土曜日です" }
+      : null;
+  state.className = `result-state ${weekdayState?.className ?? (holiday ? "result-state--holiday" : "result-state--regular")}`;
+  state.textContent = weekdayState?.message ?? (holiday ? "祝日・休日です" : "祝日・休日ではありません");
   elements.lookupResult.append(dateLine, state);
 
   if (holiday) {
