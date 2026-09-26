@@ -3,17 +3,16 @@ const TYPE_LABELS = {
   national_holiday: "国民の祝日",
   substitute_holiday: "振替休日",
   citizen_holiday: "国民の休日",
+  weekly_holiday: "週休日",
 };
 
 const elements = {
-  headerPeriod: document.querySelector("#header-period"),
   dataStatus: document.querySelector("#data-status"),
   monthLabel: document.querySelector("#month-label"),
   calendarGrid: document.querySelector("#calendar-grid"),
   previousMonth: document.querySelector("#previous-month"),
   nextMonth: document.querySelector("#next-month"),
   todayButton: document.querySelector("#today-button"),
-  lookupForm: document.querySelector("#lookup-form"),
   dateInput: document.querySelector("#date-input"),
   lookupResult: document.querySelector("#lookup-result"),
   datasetCount: document.querySelector("#dataset-count"),
@@ -53,6 +52,14 @@ function isInRange(key) {
   return key >= dateRange.from && key <= dateRange.through;
 }
 
+function holidayForDate(key) {
+  const holiday = holidayByDate.get(key);
+  if (holiday) return holiday;
+  return dateFromKey(key).getUTCDay() === 0
+    ? { date: key, name: "", type: "weekly_holiday" }
+    : null;
+}
+
 function setResultMessage(message, className = "result-placeholder") {
   const placeholder = document.createElement("div");
   placeholder.className = className;
@@ -74,24 +81,27 @@ function renderResult(key) {
     return;
   }
 
-  const holiday = holidayByDate.get(key);
+  const holiday = holidayForDate(key);
   const dateLine = document.createElement("p");
   dateLine.className = "result-date";
   dateLine.textContent = formatDate(key);
 
   const state = document.createElement("span");
-  state.className = `result-state${holiday ? "" : " result-state--regular"}`;
+  state.className = `result-state${holiday ? " result-state--holiday" : " result-state--regular"}`;
   state.textContent = holiday ? "祝日・休日です" : "祝日・休日ではありません";
   elements.lookupResult.append(dateLine, state);
 
   if (holiday) {
-    const name = document.createElement("p");
-    name.className = "result-holiday-name";
-    name.textContent = holiday.name;
+    if (holiday.name) {
+      const name = document.createElement("p");
+      name.className = "result-holiday-name";
+      name.textContent = holiday.name;
+      elements.lookupResult.append(name);
+    }
     const type = document.createElement("p");
     type.className = "result-type";
     type.textContent = TYPE_LABELS[holiday.type] ?? "国民の祝日・休日";
-    elements.lookupResult.append(name, type);
+    elements.lookupResult.append(type);
   }
 }
 
@@ -125,7 +135,7 @@ function renderCalendar() {
     const date = new Date(Date.UTC(displayedYear, displayedMonth - 1, dayNumber));
     const key = `${displayedYear}-${String(displayedMonth).padStart(2, "0")}-${String(dayNumber).padStart(2, "0")}`;
     const weekday = date.getUTCDay();
-    const holiday = holidayByDate.get(key);
+    const holiday = holidayForDate(key);
     const classes = ["day-cell"];
 
     if (weekday === 0) classes.push("day-cell--sunday");
@@ -138,15 +148,15 @@ function renderCalendar() {
     button.type = "button";
     button.className = classes.join(" ");
     button.setAttribute("aria-pressed", String(key === selectedDate));
-    button.setAttribute("aria-label", holiday ? `${formatDate(key)}、${holiday.name}` : formatDate(key));
-    button.title = holiday ? holiday.name : formatDate(key, { month: "long", day: "numeric" });
+    button.setAttribute("aria-label", holiday?.name ? `${formatDate(key)}、${holiday.name}` : formatDate(key));
+    button.title = holiday?.name ? holiday.name : formatDate(key, { month: "long", day: "numeric" });
 
     const number = document.createElement("span");
     number.className = "day-number";
     number.textContent = String(dayNumber);
     button.append(number);
 
-    if (holiday) {
+    if (holiday?.name) {
       const holidayName = document.createElement("span");
       holidayName.className = "holiday-name";
       holidayName.textContent = holiday.name;
@@ -192,7 +202,6 @@ function enableControls() {
   elements.dateInput.disabled = false;
   elements.dateInput.min = dateRange.from;
   elements.dateInput.max = dateRange.through;
-  elements.lookupForm.querySelector("button[type='submit']").disabled = false;
   elements.previousMonth.disabled = false;
   elements.nextMonth.disabled = false;
   elements.todayButton.disabled = false;
@@ -210,9 +219,6 @@ async function initialize() {
     dateRange = data.dateRange;
     holidayByDate = new Map(data.holidays.map((holiday) => [holiday.date, holiday]));
 
-    const startYear = dateRange.from.slice(0, 4);
-    const endYear = dateRange.through.slice(0, 4);
-    elements.headerPeriod.textContent = `${startYear}–${endYear}年のデータ`;
     elements.datasetCount.textContent = `${data.holidays.length.toLocaleString("ja-JP")}件 · UTF-8 JSON`;
     enableControls();
 
@@ -226,7 +232,6 @@ async function initialize() {
     renderResult(initialDate);
   } catch (error) {
     console.error("祝日データの読み込みに失敗しました:", error);
-    elements.headerPeriod.textContent = "データを読み込めません";
     elements.monthLabel.textContent = "カレンダーを表示できません";
     elements.dataStatus.hidden = false;
     elements.dataStatus.textContent = "祝日データを読み込めませんでした。data/jp-holidays.js があることを確認するか、プロジェクトのルートで python -m http.server 8000 を実行して http://localhost:8000/sample/ を開いてください。";
@@ -234,8 +239,7 @@ async function initialize() {
   }
 }
 
-elements.lookupForm.addEventListener("submit", (event) => {
-  event.preventDefault();
+elements.dateInput.addEventListener("input", () => {
   if (!elements.dateInput.value) return;
   selectDate(elements.dateInput.value);
 });

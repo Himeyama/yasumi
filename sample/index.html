@@ -3,47 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f2f6f5" />
-    <meta name="description" content="内閣府の公開データをもとに、日本の祝日・休日を1955年から2027年まで確認できます。" />
-    <title>日本の祝日カレンダー</title>
+    <meta name="theme-color" content="#f3efec" />
+    <meta name="description" content="日本の祝日・休日を月別カレンダーと日付検索で確認できる日本の祝日カレンダーです。国民の祝日、振替休日、国民の休日を1955年から2027年まで掲載。日曜日も休日として扱い、祝日名を確認できます。" />
+    <meta property="og:title" content="日本の祝日カレンダー｜祝日・休日一覧と日付検索" />
+    <meta property="og:description" content="国民の祝日、振替休日、国民の休日を1955年から2027年まで掲載。月別カレンダーと日付検索で祝日・休日を確認できます。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ja_JP" />
+    <title>日本の祝日カレンダー｜祝日・休日一覧と日付検索</title>
     <link rel="stylesheet" href="./styles.css" />
     <script src="./data/jp-holidays.js" defer></script>
     <script src="./app.js" defer></script>
   </head>
   <body>
     <div class="page-shell">
-      <header class="site-header">
-        <a class="brand" href="./" aria-label="日本の祝日カレンダー ホーム">
-          <span class="brand-mark" aria-hidden="true">祝</span>
-          <span class="brand-name">JAPAN <strong>HOLIDAYS</strong></span>
-        </a>
-        <div class="header-status">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span id="header-period">祝日データを読み込み中</span>
-        </div>
-      </header>
-
       <main>
-        <section class="page-intro" aria-labelledby="page-title">
-          <div>
-            <p class="eyebrow">HOLIDAY CALENDAR · JAPAN</p>
-            <h1 id="page-title">日本の祝日カレンダー</h1>
-            <p class="intro-copy">日付を選ぶと、祝日かどうかと祝日名を確認できます。</p>
-          </div>
-          <div class="intro-stamp" aria-hidden="true">
-            <span class="stamp-top">国民の祝日</span>
-            <span class="stamp-bottom">JP</span>
-          </div>
-        </section>
-
         <div id="data-status" class="data-status" role="alert" hidden></div>
 
         <div class="content-grid">
           <section class="panel calendar-panel" aria-labelledby="month-label">
             <div class="calendar-toolbar">
               <div>
-                <p class="eyebrow">MONTH VIEW</p>
-                <h2 id="month-label">読み込み中…</h2>
+                <p class="eyebrow">月別カレンダー</p>
+                <h1 id="month-label">読み込み中…</h1>
               </div>
               <div class="month-controls" aria-label="表示月の移動">
                 <button class="icon-button" id="previous-month" type="button" aria-label="前の月" disabled>
@@ -71,16 +52,15 @@
 
           <aside class="side-column">
             <section class="panel lookup-panel" aria-labelledby="lookup-title">
-              <p class="eyebrow">DATE LOOKUP</p>
+              <p class="eyebrow">日付検索</p>
               <h2 id="lookup-title">日付を調べる</h2>
-              <form id="lookup-form">
+              <div>
                 <label for="date-input">調べたい日付</label>
                 <div class="date-control">
-                  <input id="date-input" name="date" type="date" disabled required />
-                  <button class="primary-button" type="submit" disabled>判定</button>
+                  <input id="date-input" name="date" type="date" disabled />
                 </div>
                 <p class="field-note" id="date-range-note">1955〜2027年の祝日データを収録しています。</p>
-              </form>
+              </div>
               <div id="lookup-result" class="lookup-result" aria-live="polite" aria-atomic="true">
                 <div class="result-placeholder">データを読み込んでいます…</div>
               </div>
@@ -91,12 +71,17 @@
                 <svg viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.5c0 4.4-2.8 7.5-7 9-4.2-1.5-7-4.6-7-9V6l7-2.5Z" /><path d="m9 12 2 2 4-4" /></svg>
               </div>
               <div>
-                <p class="eyebrow">DATA SOURCE</p>
+                <p class="eyebrow">掲載元</p>
                 <h2 id="source-title">公式データを使用</h2>
                 <p class="source-copy">内閣府が公開する国民の祝日CSVをもとにしています。</p>
-                <a class="source-link" href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" target="_blank" rel="noreferrer">
-                  内閣府の掲載ページ <span aria-hidden="true">↗</span>
-                </a>
+                <div class="source-links">
+                  <a class="source-link" href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" target="_blank" rel="noreferrer">
+                    内閣府の掲載ページ <span aria-hidden="true">↗</span>
+                  </a>
+                  <a class="source-link" href="./data/jp-holidays.json" target="_blank" rel="noreferrer">
+                    祝日データ（JSON） <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
                 <p id="dataset-count" class="dataset-count">祝日データを読み込み中</p>
               </div>
             </section>
@@ -104,10 +89,6 @@
         </div>
       </main>
 
-      <footer class="site-footer">
-        <span>祝日・休日の確認用カレンダー</span>
-        <span>日付は日本標準時で表示します</span>
-      </footer>
     </div>
   </body>
 </html>

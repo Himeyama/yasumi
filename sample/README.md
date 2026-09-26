@@ -1,18 +1,12 @@
-# 日本の祝日カレンダー サンプル
+# サンプルのソース
 
-HTMLは相対パスでCSS、JavaScript、祝日データを読み込みます。`sample/data/` のデータを含めているため、`sample/index.html` を直接ブラウザーで開いて確認できます。
+このフォルダーには祝日カレンダーのHTML、CSS、JavaScript、ブラウザー用データがあります。公開用ページは `scripts/build_static_site.py` で `dist/` に生成されます。
 
-HTTPサーバーを使う場合は、プロジェクトのルート (`yasumi`) で起動します。
-
-```powershell
-python -m http.server 8000
-```
-
-ブラウザーで <http://localhost:8000/sample/> を開きます。ページは相対パスのJavaScriptデータを優先し、必要に応じて `sample/data/jp-holidays.json` を読み込みます。
-
-JSONとブラウザー用データを作り直し、Sites用の `dist/` を作る場合:
+プロジェクトのルートで次を実行すると、`/index.html` としてローカル確認できます。
 
 ```powershell
-python scripts/generate_jp_holidays.py
 python scripts/build_static_site.py
+python -m http.server 8000 --directory dist
 ```
+
+ブラウザーで <http://localhost:8000/index.html> を開いてください。詳細は[プロジェクトのREADME](../README.md)を参照してください。
